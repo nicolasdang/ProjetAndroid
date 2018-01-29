@@ -41,7 +41,7 @@
 
                 <EditText
                     android:id="@+id/TextLieu"
-                    android:layout_width="282dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
@@ -49,11 +49,19 @@
 
                 <Button
                     android:id="@+id/buttonSearch"
-                    android:layout_width="wrap_content"
+                    android:layout_width="105dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onClick"
                     android:text="Search" />
+
+                <Button
+                    android:id="@+id/buttonTo"
+                    android:layout_width="66dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:text="To" />
             </LinearLayout>
 
             <Button
