@@ -105,19 +105,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
 
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
         if(currentLocationmMarker != null)
         {
             currentLocationmMarker.remove();
 
         }
-        Log.d("lat = ",""+latitude);
+
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+
         LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
+        markerOptions.draggable(true);
+
         markerOptions.title("PositionActuel");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
         currentLocationmMarker = mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
@@ -171,7 +175,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(MapsActivity.this, "montre les McDo au alentours", Toast.LENGTH_SHORT).show();
                 break;
 
-            case R.id.buttonTo:
+            /*case R.id.buttonTo:
                 dataTransfer = new Object[3];
                 url = getDirectionsUrl();
                 GetDirectionsData getDirectionsData = new GetDirectionsData();
@@ -180,15 +184,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 dataTransfer[2] = new LatLng(end_latitude, end_longitude);
 
                 getDirectionsData.execute(dataTransfer);
-                break;
+                Toast.makeText(MapsActivity.this, "calcul de distances", Toast.LENGTH_SHORT).show();
+                break;-*/
         }
     }
 
-    private String getDirectionsUrl()
+    private String getDirectionsUrl(LatLng positionMarker)
     {
+        double lat = positionMarker.latitude;
+        double lng = positionMarker.longitude;
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsUrl.append("origin="+latitude+","+longitude);
-        googleDirectionsUrl.append("&destination="+end_latitude+","+end_longitude);
+        googleDirectionsUrl.append("&destination="+lat+","+lng);
         googleDirectionsUrl.append("&key=" + "AIzaSyAI2_26H8WYP5kLTIs-4wTvLB7FAhXe8pE");
 
         return googleDirectionsUrl.toString();
@@ -267,7 +274,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+
         marker.setDraggable(true);
+
+        Object dataTransfer[] = new Object[3];
+        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+
+
+        GetDirectionsData getDirectionsData = new GetDirectionsData();
+        LatLng positionMaker = marker.getPosition();
+        String url = getDirectionsUrl(positionMaker);
+
+
+        dataTransfer[0] = mMap;
+        dataTransfer[1] = url;
+        dataTransfer[2] = positionMaker;
+
+        getDirectionsData.execute(dataTransfer);
+        Toast.makeText(MapsActivity.this, "calcul de distances", Toast.LENGTH_SHORT).show();
+
         return false;
     }
 

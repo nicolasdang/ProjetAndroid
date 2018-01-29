@@ -46,6 +46,7 @@ public class DownloadUrl {
             e.printStackTrace();
         }
         finally {
+            if(inputStream != null)
             inputStream.close();
             urlConnection.disconnect();
         }
