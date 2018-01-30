@@ -44,7 +44,11 @@ public class DataParser {
         return googleDirectionsMap;
     }
 
-
+    /**-
+     * fonction qui va nous permettre de recupere la liste des lieux issu des données Json de google
+     * @param googlePlaceJson
+     * @return
+     */
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson)
     {
         HashMap<String, String> googlePlacesMap = new HashMap<>();

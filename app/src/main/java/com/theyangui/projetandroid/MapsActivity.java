@@ -15,6 +15,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -38,19 +40,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnMarkerDragListener
+        GoogleMap.OnMarkerClickListener
 {
 
 
     private GoogleMap mMap;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
+    private LatLng positionMarker;
     private Marker currentLocationmMarker;
     public static final int REQUEST_LOCATION_CODE = 99;
+    private SeekBar seek;
+
     int PROXIMITY_RADIUS = 10000;
     double latitude,longitude;
-    double end_latitude,end_longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        seek = (SeekBar) findViewById(R.id.seekBar2);
+        final TextView seekBarValue = (TextView)findViewById(R.id.Detail);
+
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+            @Override
+            public void onProgressChanged(SeekBar seek, int progress,
+            boolean fromUser) {
+                // TODO Auto-generated method stub
+                seekBarValue.setText("Vous recherchez à " + String.valueOf(progress) + "Km");
+            }
+
+
+
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seek) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
     }
 
 
@@ -83,7 +111,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
         }
 
-        mMap.setOnMarkerDragListener(this);
         mMap.setOnMarkerClickListener(this);
     }
 
@@ -117,7 +144,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latLng = new LatLng(location.getLatitude() , location.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
-        markerOptions.draggable(true);
 
         markerOptions.title("PositionActuel");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -175,17 +201,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(MapsActivity.this, "montre les McDo au alentours", Toast.LENGTH_SHORT).show();
                 break;
 
-            /*case R.id.buttonTo:
-                dataTransfer = new Object[3];
-                url = getDirectionsUrl();
-                GetDirectionsData getDirectionsData = new GetDirectionsData();
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-                dataTransfer[2] = new LatLng(end_latitude, end_longitude);
+            case R.id.buttonGo:
 
-                getDirectionsData.execute(dataTransfer);
-                Toast.makeText(MapsActivity.this, "calcul de distances", Toast.LENGTH_SHORT).show();
-                break;-*/
+                Object dataTransfers[] = new Object[3];
+
+
+                GetDirectionsData getDirectionsData = new GetDirectionsData();
+                 url = getDirectionsUrl(positionMarker);
+
+
+                dataTransfers[0] = mMap;
+                dataTransfers[1] = url;
+                dataTransfers[2] = positionMarker;
+
+                getDirectionsData.execute(dataTransfers);
+                Toast.makeText(MapsActivity.this, "calcul de distance & dessin trajet", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -210,15 +241,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
         private String getUrl(double latitude , double longitude , String nearbyPlace)
             {
-
+                int seekValue = seek.getProgress();
                 StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
                 googlePlaceUrl.append("location="+latitude+","+longitude);
-                googlePlaceUrl.append("&radius="+PROXIMITY_RADIUS);
+                googlePlaceUrl.append("&radius="+seekValue*1000);
                 googlePlaceUrl.append("&name="+nearbyPlace);
                 googlePlaceUrl.append("&sensor=true");
                 googlePlaceUrl.append("&key="+"AIzaSyAI2_26H8WYP5kLTIs-4wTvLB7FAhXe8pE");
 
                 Log.d("MapsActivity", "url = "+googlePlaceUrl.toString());
+                Toast.makeText(MapsActivity.this, "batiment à " +  seekValue + "km de votre position", Toast.LENGTH_SHORT).show();
 
                 return googlePlaceUrl.toString();
             }
@@ -275,40 +307,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        marker.setDraggable(true);
-
-        Object dataTransfer[] = new Object[3];
-        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
 
 
-        GetDirectionsData getDirectionsData = new GetDirectionsData();
-        LatLng positionMaker = marker.getPosition();
-        String url = getDirectionsUrl(positionMaker);
 
-
-        dataTransfer[0] = mMap;
-        dataTransfer[1] = url;
-        dataTransfer[2] = positionMaker;
-
-        getDirectionsData.execute(dataTransfer);
-        Toast.makeText(MapsActivity.this, "calcul de distances", Toast.LENGTH_SHORT).show();
+        positionMarker = marker.getPosition();
+        Toast.makeText(MapsActivity.this, "vous avez selectionné un marker", Toast.LENGTH_SHORT).show();
 
         return false;
     }
 
-    @Override
-    public void onMarkerDragStart(Marker marker) {
 
-    }
 
-    @Override
-    public void onMarkerDrag(Marker marker) {
-
-    }
-
-    @Override
-    public void onMarkerDragEnd(Marker marker) {
-        end_latitude = marker.getPosition().latitude;
-        end_longitude = marker.getPosition().longitude;
-    }
 }
