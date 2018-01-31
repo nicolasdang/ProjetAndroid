@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
 
 
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="507dp"
+        android:layout_height="587dp"
 
         android:orientation="vertical"
         tools:layout_editor_absoluteX="0dp"
@@ -56,12 +57,12 @@
                     android:text="Search" />
 
                 <Button
-                    android:id="@+id/buttonTo"
+                    android:id="@+id/buttonGo"
                     android:layout_width="66dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="onClick"
-                    android:text="To" />
+                    android:text="Go" />
             </LinearLayout>
 
             <Button
@@ -71,8 +72,23 @@
                 android:layout_height="wrap_content"
                 android:onClick="onClick"
                 android:text="Filtrer" />
+
+            <SeekBar
+                android:id="@+id/seekBar2"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="15"
+                android:progress="7" />
+
+            <TextView
+                android:id="@+id/Detail"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:text="Vous recherchez actuellement à 7Km de votre position" />s
         </LinearLayout>
 
 
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
