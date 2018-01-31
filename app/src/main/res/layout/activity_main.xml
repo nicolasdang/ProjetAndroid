@@ -25,4 +25,5 @@
             android:onClick="onClickHamButton"
             app:srcCompat="@drawable/hamburger" />
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
