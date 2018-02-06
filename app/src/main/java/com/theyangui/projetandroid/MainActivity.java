@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(this, MapsActivity.class));
 
         notification.setSmallIcon(R.drawable.ic_stat_name);
-        notification.setTicker("Hungry Now is running.");
+        notification.setTicker("WhatTheFood est en train de tourné.");
         notification.setWhen(System.currentTimeMillis());
-        notification.setContentTitle("Hungry Now");
-        notification.setContentText("You launched Hungry Now");
+        notification.setContentTitle("WhatTheFood");
+        notification.setContentText("Vous venez de lancer WhatTheFood ");
 
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

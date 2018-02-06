@@ -60,7 +60,7 @@ class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     /**
      * lorsque la fonction en background est terminé, nous allons analyser le message
      * et en ressortir une liste qui sera utilisé pour afficher les lieux
-     * de manière éfficace
+     * de manière efficace
      * @param s
      */
     @Override
@@ -68,7 +68,7 @@ class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
         List<HashMap<String, String>> nearbyPlaceList;
         DataParser parser = new DataParser();
-        nearbyPlaceList = parser.parse(s);
+        nearbyPlaceList = parser.parsePlace(s);
         Log.d("nearbyplacesdata","called parse method");
         showNearbyPlaces(nearbyPlaceList);
     }

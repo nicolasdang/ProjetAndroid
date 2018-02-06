@@ -11,7 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * va nous permettre de ressortir une String contenant
+ * l'URL rentré va nous ressortir un texte issu de la BDD de Google et que provient de notre requête
+ * c'est en réalité un Json que nous pourrons analysé à l'aide de la classe DataParser.
+ * Cette fonction va nous permettre de ressortir une String contenant
  * les informations contenue dans l'url rentré
  */
 public class DownloadUrl {

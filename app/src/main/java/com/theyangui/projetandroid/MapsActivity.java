@@ -35,7 +35,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
+/**
+ * ceci est en réalité la classe principale, ou nous effectuerons les fonctions lié à la map
+ * la plupart des fonctions repose sur un même principe, les différents interaction de l'utilisateur
+ * nous permets de récuperer une requete URL qui nous ressort
+ * les information issu de la BDD de google elles seront ensuite afficher sur la map.
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -55,6 +60,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int PROXIMITY_RADIUS = 10000;
     double latitude,longitude;
 
+    /**
+     * la classe est crée lorsque l'activité lié à la map est crée.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +82,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final TextView seekBarValue = (TextView)findViewById(R.id.Detail);
 
         seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+
+            /**
+             * lorsque la Seekbar change, cela va changer le texte informant l'utilisateur.
+             * @param seek
+             * @param progress
+             * @param fromUser
+             */
             @Override
             public void onProgressChanged(SeekBar seek, int progress,
             boolean fromUser) {
@@ -160,8 +176,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     /**
-     * va réagir lorsque les boutons sont sélectionné
-     * @param v
+     * va réagir lorsque les boutons sont sélectionné, à l'aide du switch
+     * nous pouvons agir différement selon le bouton cliqué et nous éviter de créer plusieur fonction onClick
+     * @param v représente le bouton cliqué
      */
     public void onClick(View v)
     {
@@ -188,7 +205,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(MapsActivity.this, "montre les " + chaine +" au alentours", Toast.LENGTH_SHORT).show();
                 break;
 
-            // Si le bouton Filtrer est activé , va faire une recherche selon le mot rentré ( ici McDonald)
+            // Si le bouton Filtrer est activé , nous devions afficher tout les restaurant de la map à une certaine position, cependant
+            // beaucoup d'hotel sont considéré comme des restaurant ce qui ne nous donnait pas les résultat voulu, nous avons donc choisi
+            // d'afficher la liste des mcDonald et attendant de trouver une solution.
             case R.id.Filtrer:
 
                 mMap.clear();
@@ -201,6 +220,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(MapsActivity.this, "montre les McDo au alentours", Toast.LENGTH_SHORT).show();
                 break;
 
+                // va nous donner le chemin à parcourir pour arriver vers le marker selectionné.
             case R.id.buttonGo:
 
                 Object dataTransfers[] = new Object[3];
@@ -220,6 +240,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * va nous construire l'url qui nous permettra de récuperer les information lié
+     * au chemin à parcourir pour atteindre un certains marker
+     * depuis notre position (tel que la durée du chemin,la distance ou le detail du chemin à parcourir)
+     * @param positionMarker
+     * @return
+     */
     private String getDirectionsUrl(LatLng positionMarker)
     {
         double lat = positionMarker.latitude;
@@ -304,12 +331,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+
+    /**
+     * cette fonction nous permets de connaitre le maker qu'a selectionné l'utilisateur.
+     * @param marker
+     * @return
+     */
     @Override
     public boolean onMarkerClick(Marker marker) {
-
-
-
-
         positionMarker = marker.getPosition();
         Toast.makeText(MapsActivity.this, "vous avez selectionné un marker", Toast.LENGTH_SHORT).show();
 

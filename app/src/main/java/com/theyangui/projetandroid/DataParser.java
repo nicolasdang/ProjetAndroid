@@ -21,6 +21,11 @@ import java.util.List;
 
 public class DataParser {
 
+    /**
+     * va analyser un fichier Json est va nous retourner les informations que l'on veut.
+     * @param googleDirectionsJson texte en Json que l'on veut analyser
+     * @return va nous retourner une HashMap<String,String> contenant la durée et la distance du trajet.
+     */
     private HashMap<String,String> getDuration(JSONArray googleDirectionsJson)
     {
         HashMap<String,String> googleDirectionsMap = new HashMap<>();
@@ -44,10 +49,11 @@ public class DataParser {
         return googleDirectionsMap;
     }
 
-    /**-
-     * fonction qui va nous permettre de recupere la liste des lieux issu des données Json de google
-     * @param googlePlaceJson
-     * @return
+    /**
+     * chaque lieu est caractérisé par des couples de string (ex : latitude + sa latitude )
+     * cette fonction nous permets d'en récuperer les couples qui la compose
+     *  @param googlePlaceJson
+     * @return retourne des couple de String avec les information voulu et de les catégoriser.
      */
     private HashMap<String, String> getPlace(JSONObject googlePlaceJson)
     {
@@ -94,7 +100,11 @@ public class DataParser {
     }
 
 
-
+    /**
+     * fonction qui va nous permettre de recupere la liste des lieux issu des données Json de google
+     * @param jsonArray
+     * @returnva  va nous retourner une liste de lieux avec les hashmap
+     */
     private List<HashMap<String,String>> getPlaces(JSONArray jsonArray)
     {
         int count = jsonArray.length();
@@ -116,7 +126,12 @@ public class DataParser {
 
     }
 
-    public List<HashMap<String,String>> parse(String jsonData)
+    /**
+     * cette fonction va récuperer le texte en String et
+     * le transformer en un objet JsonArray qui va être analysé par la suite
+     * cette fonction est spécialisé pour les lieux issus de GetNearbyPlacesData
+     */
+    public List<HashMap<String,String>> parsePlace(String jsonData)
     {
         JSONArray jsonArray = null;
         JSONObject jsonObject;
@@ -134,6 +149,13 @@ public class DataParser {
         return getPlaces(jsonArray);
     }
 
+    /**
+     * cette fonction va récuperer le texte en String et
+     * le transformer en un objet JsonArray qui va être analysé par la suite
+     * cette fonction est spécialisé pour le chemin à parcourir issus de GetDirectionsData
+     * @param jsonData
+     * @return
+     */
     public String[] parseDirections(String jsonData)
     {
         JSONArray jsonArray = null;
@@ -145,9 +167,37 @@ public class DataParser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return getPaths(jsonArray);
+        return getPaths(jsonArray) ;
     }
 
+    /**
+     * cette fonction va récuperer le texte en String et
+     * le transformer en un objet JsonArray qui va être analysé par la suite
+     * cette fonction est spécialisé pour les information de durée et de distance issus de GetNearbyPlacesData
+     * @param jsonData
+     * @return
+     */
+    public HashMap<String,String> parserDureeDistance(String jsonData)
+    {
+        JSONArray jsonArray = null;
+        JSONObject jsonObject;
+
+        try {
+            jsonObject = new JSONObject(jsonData);
+            jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return getDuration(jsonArray);
+    }
+
+    /**
+     * un chemin est en réalité l'assemblement de plusieurs chemins, cette fonction va nous permettre
+     * à l'aide d'un Json, la position de chaque chemin et de nous retourner une liste des différents segment
+     * qui compose une route.
+     * @param googleStepsJson
+     * @return
+     */
     public String[] getPaths(JSONArray googleStepsJson )
     {
         int count = googleStepsJson.length();
@@ -165,6 +215,12 @@ public class DataParser {
         return polylines;
     }
 
+    /**
+     * la fonction va recuperer du fichier Json la position d'un segment pour tracer la route,
+     * et va nous retourner une String contenant la position des points
+     * @param googlePathJson
+     * @return
+     */
     public String getPath(JSONObject googlePathJson)
     {
         String polyline = "";
